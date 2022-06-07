@@ -31,4 +31,6 @@
             android:name="flutterEmbedding"
             android:value="2" />
     </application>
+    <!-- <user-permission android:name"android.permission.CAMERA"></user-permission>
+    <user-permission android:name"android.permission..CAPTURE_AUDIO_OUTPUT"></user-permission> -->
 </manifest>
