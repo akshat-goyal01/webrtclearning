@@ -37,6 +37,7 @@ dependencies:
   # webrtc: ^0.0.1
   flutter_webrtc: ^0.8.7
   permission_handler: ^9.2.0
+  sdp_transform: ^0.3.2
 
 dev_dependencies:
   flutter_test:

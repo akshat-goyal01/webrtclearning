@@ -1,5 +1,8 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
+import 'package:sdp_transform/sdp_transform.dart';
 //import 'package:permission_handler/permission_handler.dart';
 
 //import 'package:webrtc/get_user_media.dart';
@@ -33,14 +36,21 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  bool _offer = false;
+  RTCPeerConnection? _peerConnection;
+  MediaStream? _localStream;
   final _localrenderer = RTCVideoRenderer();
   final _remoterenderer = RTCVideoRenderer();
   final sdpController = TextEditingController();
 
   @override
-  void dispose() {
+  dispose() async* {
     _localrenderer.dispose();
     _remoterenderer.dispose();
+
+    // RTCPeerConnection pc =
+    //     await createPeerConnection();
+
     sdpController.dispose();
     super.dispose();
   }
@@ -48,8 +58,57 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     initRenderers();
-    _getUserMedia();
+    _createPeerConnection().then((pc) {
+      _peerConnection = pc;
+    });
     super.initState();
+  }
+
+  // Future<RTCPeerConnection> _createPeerConnection(
+  //   Map<String, dynamic> configuration,
+  //   [Map<String, dynamic> constraints = const {}]) async {
+  //   return RTCFactoryNative.instance
+  //     .createPeerConnection(configuration, constraints);
+  // }
+  _createPeerConnection() async {
+    Map<String, dynamic> configuration = {
+      "iceServers": [
+        {"url": "stun:stun.l.google.com:19302"}
+      ]
+    };
+    final Map<String, dynamic> offerSdpConstraints = {
+      "mandoatory": {
+        "OfferToReciveAudio": true,
+        "OfferToRecivVideo": true,
+      },
+      "optional": []
+    };
+    _localStream = await _getUserMedia();
+
+    RTCPeerConnection pc =
+        await createPeerConnection(configuration, offerSdpConstraints);
+
+    pc.addStream(_localStream!);
+
+    pc.onIceCandidate = (e) {
+      if (e.candidate != null) {
+        print(jsonEncode({
+          'candidate': e.candidate.toString(),
+          'sdpMid': e.sdpMid.toString(),
+          'sdpMLineIndex': e.sdpMLineIndex.toString(),
+        }));
+      }
+    };
+
+    pc.onConnectionState = (e) {
+      print(e);
+    };
+
+    pc.onAddStream = (stream) {
+      print('addstream${stream.id}');
+      _remoterenderer.srcObject = stream;
+    };
+    return pc;
   }
 
   initRenderers() async {
@@ -73,6 +132,18 @@ class _MyHomePageState extends State<MyHomePage> {
       _localrenderer,
       mirror: true,
     );
+    return stream;
+  }
+
+  _createOffer() async {
+    RTCSessionDescription description =
+        await _peerConnection!.createOffer({'offerToReciveVideo': 1});
+
+    var session = parse(description.sdp.toString());
+    print(jsonEncode(session));
+    _offer = true;
+
+    _peerConnection?.setLocalDescription(description);
   }
 
   SizedBox videoRenderers() => SizedBox(
@@ -99,7 +170,7 @@ class _MyHomePageState extends State<MyHomePage> {
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
           GestureDetector(
-            onTap: null,
+            onTap: _createOffer,
             child: Container(
               padding: const EdgeInsets.all(10.0),
               color: Colors.grey,
