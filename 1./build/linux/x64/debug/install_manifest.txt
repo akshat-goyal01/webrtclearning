@@ -1,0 +1,11 @@
+/home/akshat/webrtc_app/build/linux/x64/debug/bundle/webrtc_app
+/home/akshat/webrtc_app/build/linux/x64/debug/bundle/data/icudtl.dat
+/home/akshat/webrtc_app/build/linux/x64/debug/bundle/lib/libflutter_linux_gtk.so
+/home/akshat/webrtc_app/build/linux/x64/debug/bundle/data/flutter_assets/AssetManifest.json
+/home/akshat/webrtc_app/build/linux/x64/debug/bundle/data/flutter_assets/FontManifest.json
+/home/akshat/webrtc_app/build/linux/x64/debug/bundle/data/flutter_assets/version.json
+/home/akshat/webrtc_app/build/linux/x64/debug/bundle/data/flutter_assets/NOTICES
+/home/akshat/webrtc_app/build/linux/x64/debug/bundle/data/flutter_assets/packages/cupertino_icons/assets/CupertinoIcons.ttf
+/home/akshat/webrtc_app/build/linux/x64/debug/bundle/data/flutter_assets/NOTICES.Z
+/home/akshat/webrtc_app/build/linux/x64/debug/bundle/data/flutter_assets/kernel_blob.bin
+/home/akshat/webrtc_app/build/linux/x64/debug/bundle/data/flutter_assets/fonts/MaterialIcons-Regular.otf
